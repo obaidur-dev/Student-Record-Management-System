@@ -1,0 +1,93 @@
+# Student Record Management System
+
+A console-based student management system built in C.
+
+## Features
+- Login system with SHA-256 hashed password storage
+- Add student records (rejects duplicate roll numbers)
+- Display all records
+- Search student by roll number
+- Edit and delete student records
+- Change password (hashed with SHA-256)
+- Menu loop — program stays open until you choose Exit
+- Marks validated between 0 and 100
+- NULL checks on all file operations (no crash on missing files)
+
+## What's New in v2
+- Fixed double fclose() crash in searchstudent() delete flow
+- Fixed segfault when StudentData.txt is missing
+- Password is now stored as a SHA-256 hash instead of plaintext
+- Added menu loop (v1 exited after a single action)
+- Added duplicate roll number check
+- Added marks range validation
+
+## How to Compile and Run
+
+### Linux
+Install OpenSSL dev headers if you don't already have them:
+
+sudo apt install libssl-dev
+
+Compile:
+
+gcc SRM_v2.c -o SRM_v2 -lssl -lcrypto
+
+Run:
+
+./SRM_v2
+
+### Windows (MSYS2 / MinGW)
+Plain MinGW does not ship OpenSSL, so install MSYS2 first: https://www.msys2.org
+Then, from the "MSYS2 MINGW64" terminal (not the plain MSYS2 terminal):
+
+pacman -S mingw-w64-x86_64-gcc mingw-w64-x86_64-openssl
+
+Compile:
+
+gcc SRM_v2.c -o SRM_v2.exe -lssl -lcrypto
+
+Run:
+
+./SRM_v2.exe
+
+## Default Login
+User ID: admin
+Password: admin123
+(created automatically as a SHA-256 hash on first run if password.dat does not exist)
+
+## Troubleshooting
+
+### Linux
+Problem: undefined reference to SHA256
+Fix: -lssl -lcrypto is missing from the gcc command. It must come after the source file.
+
+Problem: openssl/sha.h: No such file or directory
+Fix: sudo apt install libssl-dev
+
+Problem: Login fails no matter what after upgrading from v1
+Fix: v1 stored the password as plaintext, v2 stores a hash. Delete the old file first: rm password.dat
+
+### Windows
+Problem: openssl/sha.h: No such file or directory
+Fix: You're compiling with plain MinGW, which doesn't include OpenSSL. Install it through MSYS2 (pacman -S mingw-w64-x86_64-openssl) and compile from the MINGW64 shell.
+
+Problem: cannot find -lssl or -lcrypto
+Fix: You're in the wrong MSYS2 shell. Use "MSYS2 MINGW64", not "MSYS2 MSYS" — the linker paths differ.
+
+Problem: The console window flashes and closes immediately
+Fix: Don't double-click SRM_v2.exe. Run it from Command Prompt or PowerShell so the window stays open and you can read the output.
+
+Problem: Login fails no matter what after upgrading from v1
+Fix: Same as Linux — delete the old plaintext password.dat before running v2.
+
+### Both platforms
+Problem: Records look corrupted or go missing after adding a student
+Fix: Close StudentData.txt if it's open in Notepad or another editor. Windows can lock the file while it's open elsewhere.
+
+Problem: Compiled fine but crashes immediately on first run
+Fix: Make sure the program has write access to its own folder — it needs to create StudentData.txt and password.dat there.
+
+## Developer
+Obaidur Rahman
+Jamia Millia Islamia, New Delhi
+1st Year Diploma - Computer Engineering
